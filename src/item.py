@@ -1,5 +1,6 @@
 import csv
 
+# Константа, содержащая путь до csv-файла с данными
 from settings import DATA_PATH
 
 
@@ -29,16 +30,24 @@ class Item:
 
     @name.setter
     def name(self, new_name: str):
+        # Проверяем название товара на длину в 10 букв
         if len(new_name) <= 10:
             self.__name = new_name
         else:
-            self.__name = new_name[:10]
+            print('\nДлина наименования товара превышает 10 символов.\n')
+            self.__name = new_name[:10]  # Обрезаем название до 10 символов
 
     @classmethod
     def instantiate_from_csv(cls):
-        Item.all = []
+        """
+        Класс-метод инициализирует экземпляры класса `Item`
+        данными из файла _src/items.csv
+        """
+        Item.all = []   # Очищаем список экземпляров класса
+        # Считываем данные из csv-файла
         with open(DATA_PATH, encoding='windows-1251') as data_file:
             file_reader = csv.DictReader(data_file, delimiter=",")
+            # Инициализируем экземпляры класса данными построчно из файла
             for row in file_reader:
                 Item(name=row['name'],
                      price=cls.string_to_number(row['price']),
@@ -46,6 +55,9 @@ class Item:
 
     @staticmethod
     def string_to_number(string_with_digits: str) -> int:
+        """
+        Преобразует и возвращает целочисленное число из строки
+        """
         return int(float(string_with_digits))
 
     def calculate_total_price(self) -> float:
