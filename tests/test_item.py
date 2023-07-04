@@ -6,6 +6,7 @@ from src.item import Item
 
 @pytest.fixture
 def data_for_tests():
+    Item.all = []
     data = [
         {'name': 'Кабель', 'price': 10, 'quantity': 5},
         {'name': 'Мышка', 'price': 50, 'quantity': 5},
@@ -61,3 +62,8 @@ def test_instantiate_from_csv():
     assert Item.all[0].name == 'Смартфон'
     assert Item.all[1].price == 1000
     assert Item.all[2].quantity == 5
+
+
+def test_str_repr_methods(data_for_tests):
+    assert repr(Item.all[0]) == "Item('Кабель', 10, 5)"
+    assert str(Item.all[2]) == 'Клавиатура'
