@@ -67,3 +67,11 @@ def test_instantiate_from_csv():
 def test_str_repr_methods(data_for_tests):
     assert repr(Item.all[0]) == "Item('Кабель', 10, 5)"
     assert str(Item.all[2]) == 'Клавиатура'
+
+
+def test_sum_classes():
+    item1 = Item('Кабель', 10, 5)
+    item2 = Item('Мышка', 20, 10)
+    assert item1 + item2 == 15
+    with pytest.raises(Exception):
+        _ = item1 + 25
