@@ -30,6 +30,12 @@ class Item:
     def __str__(self):
         return f"{self.__name}"
 
+    def __add__(self, other):  # метод складывания классов
+        # Проверяем на принадлежность к подклассу, или к его родительскому классу
+        if issubclass(other.__class__, self.__class__):
+            return self.quantity + other.quantity
+        raise Exception(f'Ошибка: несовместимые объекты {self.__class__.__name__} и {other.__class__.__name__}')
+
     @property
     def name(self):
         return self.__name
