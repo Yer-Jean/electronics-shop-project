@@ -1,7 +1,8 @@
 import csv
 
 # Константа, содержащая путь до csv-файла с данными
-from settings import DATA_PATH
+from settings import DATA_PATH, DATA_FILE
+from src.exceptions import InstantiateCSVError
 
 
 class Item:
@@ -57,13 +58,18 @@ class Item:
         """
         Item.all = []   # Очищаем список экземпляров класса
         # Считываем данные из csv-файла
-        with open(DATA_PATH, encoding='windows-1251') as data_file:
-            file_reader = csv.DictReader(data_file, delimiter=",")
-            # Инициализируем экземпляры класса данными построчно из файла
-            for row in file_reader:
-                Item(name=row['name'],
-                     price=cls.string_to_number(row['price']),
-                     quantity=cls.string_to_number(row['quantity']))
+        try:
+            with open(DATA_PATH, encoding='windows-1251') as data_file:
+                file_reader = csv.DictReader(data_file, delimiter=",")
+                try:   # Инициализируем экземпляры класса данными построчно из файла
+                    for row in file_reader:
+                        Item(name=row['name'],
+                             price=cls.string_to_number(row['price']),
+                             quantity=cls.string_to_number(row['quantity']))
+                except (TypeError, KeyError):
+                    raise InstantiateCSVError(f'Файл {DATA_FILE} поврежден')
+        except FileNotFoundError:
+            print(f'Отсутствует файл {DATA_FILE}')
 
     @staticmethod
     def string_to_number(string_with_digits: str) -> int:

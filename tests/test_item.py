@@ -1,6 +1,11 @@
 """Здесь надо написать тесты с использованием pytest для модуля item."""
+from pathlib import Path
+
 import pytest
 
+import settings
+import src.item
+from src.exceptions import InstantiateCSVError
 from src.item import Item
 
 
@@ -75,3 +80,24 @@ def test_sum_classes():
     assert item1 + item2 == 15
     with pytest.raises(Exception):
         _ = item1 + 25
+
+
+def test_exceptions():
+    TEST_PATH = Path.joinpath(settings.ROOT, 'tests')
+
+    # Test - FileNotFoundException - открываем несуществующий файл
+    src.item.DATA_FILE = 'wrong_file.csv'
+    src.item.DATA_PATH = Path.joinpath(settings.SRC_PATH, src.item.DATA_FILE)
+    Item.instantiate_from_csv()
+
+    # Test - KeyError - отсутствует один из заголовков колонок
+    src.item.DATA_FILE = 'bad_data_title.csv'
+    src.item.DATA_PATH = Path.joinpath(TEST_PATH, src.item.DATA_FILE)
+    with pytest.raises(InstantiateCSVError):
+        Item.instantiate_from_csv()
+
+    # Test - TypeError - отсутствует одно из значений в строке
+    src.item.DATA_FILE = 'bad_data_column.csv'
+    src.item.DATA_PATH = Path.joinpath(TEST_PATH, src.item.DATA_FILE)
+    with pytest.raises(InstantiateCSVError):
+        Item.instantiate_from_csv()
