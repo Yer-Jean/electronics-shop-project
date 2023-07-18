@@ -5,7 +5,7 @@ import pytest
 
 import settings
 import src.item
-from src.exceptions import InstantiateCSVError
+from src.exceptions import InstantiateCSVError, CSVFileNotFound
 from src.item import Item
 
 
@@ -88,7 +88,8 @@ def test_exceptions():
     # Test - FileNotFoundException - открываем несуществующий файл
     src.item.DATA_FILE = 'wrong_file.csv'
     src.item.DATA_PATH = Path.joinpath(settings.SRC_PATH, src.item.DATA_FILE)
-    Item.instantiate_from_csv()
+    with pytest.raises(CSVFileNotFound):
+        Item.instantiate_from_csv()
 
     # Test - KeyError - отсутствует один из заголовков колонок
     src.item.DATA_FILE = 'bad_data_title.csv'
