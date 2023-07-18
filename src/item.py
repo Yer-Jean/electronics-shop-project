@@ -2,7 +2,7 @@ import csv
 
 # Константа, содержащая путь до csv-файла с данными
 from settings import DATA_PATH, DATA_FILE
-from src.exceptions import InstantiateCSVError
+from src.exceptions import InstantiateCSVError, CSVFileNotFound
 
 
 class Item:
@@ -69,7 +69,7 @@ class Item:
                 except (TypeError, KeyError):
                     raise InstantiateCSVError(f'Файл {DATA_FILE} поврежден')
         except FileNotFoundError:
-            print(f'Отсутствует файл {DATA_FILE}')
+            raise CSVFileNotFound(f'Отсутствует файл {DATA_FILE}')
 
     @staticmethod
     def string_to_number(string_with_digits: str) -> int:
